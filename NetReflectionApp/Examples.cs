@@ -65,5 +65,22 @@ namespace NetReflectionApp
 
             Console.WriteLine(methodGet?.Invoke(account, null));
         }
+
+        public static void GetConstructorsExample()
+        {
+            var ctors = typeof(BankAccount).GetConstructors();
+            foreach (var c in ctors)
+            {
+                ParameterInfo[] parameters = c.GetParameters();
+                foreach (var param in parameters)
+
+                    Console.WriteLine($"{param.ParameterType} {param.Name}");
+                Console.WriteLine("-----------------");
+            }
+
+            var ctor = ctors.First();
+            var acc = (BankAccount)ctor.Invoke(new object[] { 2000.0 });
+            Console.WriteLine(acc.GetAmount());
+        }
     }
 }

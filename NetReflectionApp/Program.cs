@@ -7,19 +7,22 @@ namespace NetReflectionApp
     {
         static void Main(string[] args)
         {
-            var ctors = typeof(BankAccount).GetConstructors();
-            foreach(var c in ctors)
-            {
-                ParameterInfo[] parameters = c.GetParameters();
-                foreach(var param in parameters)
+            var account = new BankAccount(2000);
+            var bankAccountType = account.GetType();
 
-                    Console.WriteLine($"{param.ParameterType} {param.Name}");
-                Console.WriteLine("-----------------");
-            }
+            var fields = bankAccountType.GetFields(BindingFlags.Instance 
+                                                    | BindingFlags.Public
+                                                    | BindingFlags.NonPublic);
 
-            var ctor = ctors.First();
-            var acc = (BankAccount)ctor.Invoke(new object[] { 2000.0 });
-            Console.WriteLine(acc.GetAmount());    
+            foreach (var f in fields)
+                Console.WriteLine($"Field: {f} {f.GetValue(account)}");
+
+            var field = bankAccountType.GetField("amount", BindingFlags.Instance
+                                                        | BindingFlags.Public
+                                                        | BindingFlags.NonPublic);
+            field.SetValue(account, 3000);
+
+            Console.WriteLine(account.GetAmount());
         }
     }
 }
